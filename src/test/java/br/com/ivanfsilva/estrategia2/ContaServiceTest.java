@@ -4,6 +4,7 @@ import br.com.ivanfsilva.entidades.Conta;
 import br.com.ivanfsilva.entidades.Usuario;
 import br.com.ivanfsilva.service.ContaService;
 import br.com.ivanfsilva.service.UsuarioService;
+
 import com.github.javafaker.Faker;
 import org.junit.Assert;
 import org.junit.Before;
