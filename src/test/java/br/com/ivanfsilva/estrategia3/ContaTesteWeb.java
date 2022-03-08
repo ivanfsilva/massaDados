@@ -1,13 +1,13 @@
-package br.com.ivanfsilva.estrategia2;
+package br.com.ivanfsilva.estrategia3;
 
-import br.com.ivanfsilva.estrategia3.GeradorMassas;
-import br.com.ivanfsilva.estrategia3.MassaDAOImpl;
 import com.github.javafaker.Faker;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.sql.SQLException;
 import java.util.concurrent.TimeUnit;
 
 public class ContaTesteWeb {
@@ -26,7 +26,6 @@ public class ContaTesteWeb {
         driver.findElement(By.id("email")).sendKeys("a@a");
         driver.findElement(By.id("senha")).sendKeys("a");
         driver.findElement(By.tagName("button")).click();
-
     }
 
     @Test
@@ -41,20 +40,20 @@ public class ContaTesteWeb {
     }
 
     @Test
-    public void listar() throws SQLException, ClassNotFoundException {
-        String conta = new MassaDAOImpl().obterMassa(GeradorMassas.CHAVE_CONTA_SB);
+    public void listar() {
+        String conta = inserirConta();
+
         driver.findElementByLinkText("Contas").click();
         driver.findElementByLinkText("Listar").click();
         driver.findElementByXPath("//td[contains(text(), '"+ conta + "')]/..//a").click();
         String nomeConta = driver.findElement(By.id("nome")).getAttribute("value");
 
         Assert.assertEquals(conta, nomeConta);
-
     }
 
     @Test
-    public void alterar() throws SQLException, ClassNotFoundException {
-        String conta = new MassaDAOImpl().obterMassa(GeradorMassas.CHAVE_CONTA_SB);
+    public void alterar() {
+        String conta = inserirConta();
 
         driver.findElementByLinkText("Contas").click();
         driver.findElementByLinkText("Listar").click();
@@ -64,12 +63,11 @@ public class ContaTesteWeb {
         String msg = driver.findElementByXPath("//div[@class='alert alert-success']").getText();
 
         Assert.assertEquals("Conta alterada com sucesso!", msg);
-
     }
 
     @Test
-    public void excluir() throws SQLException, ClassNotFoundException {
-        String conta = new MassaDAOImpl().obterMassa(GeradorMassas.CHAVE_CONTA_SB);
+    public void excluir() {
+        String conta = inserirConta();
 
         driver.findElementByLinkText("Contas").click();
         driver.findElementByLinkText("Listar").click();
@@ -77,7 +75,17 @@ public class ContaTesteWeb {
         String msg = driver.findElementByXPath("//div[@class='alert alert-success']").getText();
 
         Assert.assertEquals("Conta removida com sucesso!", msg);
+    }
 
+    public String inserirConta() {
+        String registro = faker.harryPotter().character();
+
+        driver.findElementByLinkText("Contas").click();
+        driver.findElementByLinkText("Adicionar").click();
+        driver.findElement(By.id("nome")).sendKeys(registro);
+        driver.findElement(By.tagName("button")).click();
+
+        return registro;
     }
 
     @After
